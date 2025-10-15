@@ -30,3 +30,5 @@ Thumbs.db
 users/migrations/
 stock/migrations/
 file/
+staticfiles/
+
