@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics, permissions
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.models import Token as AuthToken
 from django.contrib.auth import authenticate, get_user_model
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from .permissions import IsAdmin, IsManagerOfOwnStore
 
 User = get_user_model()
@@ -16,6 +16,7 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
+    serializer_class = LoginSerializer
 
     def post(self, request):
         username = request.data.get('username')
@@ -23,7 +24,7 @@ class LoginView(generics.GenericAPIView):
         user = authenticate(username=username, password=password)
 
         if user:
-            token, created = Token.objects.get_or_create(user=user)
+            token, created = AuthToken.objects.get_or_create(user=user)
             return Response({
                 "token": token.key,
                 "user": {
