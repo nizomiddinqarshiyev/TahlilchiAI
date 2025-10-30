@@ -8,13 +8,20 @@ from django.urls import path, re_path, include
 
 from core import settings
 
+from django.urls import path
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+
 schema_view = get_schema_view(
    openapi.Info(
-      title="Sizning API nomingiz",
+      title="Tahlilchi API",
       default_version='v1',
       description="API hujjatlari",
       terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="you@example.com"),
+      contact=openapi.Contact(email="qarshiyevnizomiddin75@gmail.com"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,
@@ -31,6 +38,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/stock/', include('stock.urls')),
     path('api/', include('users.urls')),
+
+    # JWT token olish va yangilash
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
