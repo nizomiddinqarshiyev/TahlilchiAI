@@ -1,4 +1,7 @@
+import json
 from rest_framework import viewsets, permissions
+from sqlalchemy.sql.operators import isnot
+
 from users import permissions as user_permissions
 from .serializers import (
     StoreSerializer, ProductSerializer, DailySaleSerializer,
@@ -72,7 +75,6 @@ class FileUploadAPIView(APIView):
             'product': Product,
             'dailysale': DailySale,
             'stockdata': StockData,
-            'forecast': Forecast,
             'replenishment': Replenishment
         }
 
@@ -83,12 +85,20 @@ class FileUploadAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Fayl turini aniqlash (Excel yoki CSV)
         try:
-            if file_obj.name.endswith('.csv'):
-                df = pd.read_csv(file_obj)
-            else:
-                df = pd.read_excel(file_obj)
+
+            # Fayl turini aniqlash (Json, Excel yoki CSV)
+                if file_obj.name.endswith('.csv'):
+                    df = pd.read_csv(file_obj)
+
+                elif file_obj.name.endswith('.json'):
+                    data = json.load(file_obj)
+                    if isinstance(data, dict):
+                        # Agar JSON bitta obyekt bo‘lsa
+                        data = [data]
+                    df = pd.DataFrame(data)
+                else:
+                    df = pd.read_excel(file_obj)
         except Exception as e:
             return Response({"error": f"Faylni o‘qishda xatolik: {e}"}, status=400)
 
@@ -103,5 +113,56 @@ class FileUploadAPIView(APIView):
                 print(f"⚠️ Xatolik: {e}")
 
         return Response({
-            "message": f"{model_name} jadvaliga {created_count} ta yozuv muvaffaqiyatli yuklandi."
+            "message": f" {created_count} ta {model_name} muvaffaqiyatli yuklandi."
+        }, status=200)
+
+class UploadForecastAPIView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    def post(self, request, *args, **kwargs):
+        file_obj = request.data.get('file')
+        store_id = request.data.get('store_id')
+        period = request.data.get('period')
+        if not file_obj or not store_id or not period:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if file_obj.name.endswith('.json'):
+                data = json.load(file_obj)
+                arr = []
+                for k, v in data.items():
+                    product_id = v['product_id']
+                    forecast = v['forecast']
+
+                    for fcst in forecast:
+                        dic = {
+                            'product_id': product_id,
+                            'forecast_date': fcst['date'],
+                            'predicted_quantity': fcst['predicted_quantity'],
+                            'forecast_period': period,
+                            'store_id': store_id
+                        }
+
+                        arr.append(dic)
+                df = pd.DataFrame(arr)
+            else:
+            # Fayl turini aniqlash (Json, Excel yoki CSV)
+                if file_obj.name.endswith('.csv'):
+                    df = pd.read_csv(file_obj)
+                else:
+                    df = pd.read_excel(file_obj)
+        except Exception as e:
+            return Response({"error": f"Faylni o‘qishda xatolik: {e}"}, status=400)
+
+        # Ma’lumotlarni bazaga joylash
+        created_count = 0
+        for _, row in df.iterrows():
+            data = row.to_dict()
+            try:
+                Forecast.objects.create(**data)
+                created_count += 1
+            except Exception as e:
+                print(f"⚠️ Xatolik: {e}")
+
+        return Response({
+            "message": f"{created_count} ta forecast  muvaffaqiyatli yuklandi."
         }, status=200)

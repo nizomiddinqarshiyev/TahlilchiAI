@@ -1,9 +1,15 @@
+import jwt
 from rest_framework import viewsets, generics, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token as AuthToken
 from django.contrib.auth import authenticate, get_user_model
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from .permissions import IsAdmin, IsManagerOfOwnStore
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SECRET = load_dotenv('SECRET')
 
 User = get_user_model()
 
@@ -12,29 +18,6 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
-
-
-class LoginView(generics.GenericAPIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        user = authenticate(username=username, password=password)
-
-        if user:
-            token, created = AuthToken.objects.get_or_create(user=user)
-            return Response({
-                "token": token.key,
-                "user": {
-                    "id": user.id,
-                    "username": user.username,
-                    "full_name": user.full_name,
-                    "role": user.role,
-                }
-            })
-        return Response({"error": "Login yoki parol noto‘g‘ri!"}, status=400)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -50,3 +33,10 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [permissions.IsAuthenticated]
         return [p() for p in permission_classes]
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

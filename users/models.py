@@ -14,3 +14,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+    def get_role(self):
+        return self.role
