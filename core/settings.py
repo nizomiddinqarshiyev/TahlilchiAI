@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+import datetime
+
+EXPIRING_TOKEN_LIFESPAN = datetime.timedelta(minutes=3)
 
 # Application definition
 
@@ -64,12 +68,28 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+}
+
+SIMPLE_JWT = {
+    # Asosiy access token muddati
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),   # ⏱️ 15 daqiqa amal qiladi
+
+    # Refresh token muddati
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),      # 🔁 1 kun amal qiladi
+
+    # Agar refresh token bilan yangilashdan keyin eski token ishlamasin desangiz:
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+
+    # Tokenni qanday chiqarish haqida qo‘shimcha sozlamalar:
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 SWAGGER_SETTINGS = {

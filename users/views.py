@@ -39,14 +39,14 @@ class LoginView(generics.GenericAPIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    permission_classes = [permissions.AllowAny,]
+    permission_classes = [permissions.IsAuthenticated,]
     serializer_class = UserSerializer
 
-    # def get_permissions(self):
-    #     if self.action in ['list', 'create', 'destroy']:
-    #         permission_classes = [IsAdmin]
-    #     elif self.action in ['retrieve', 'update', 'partial_update']:
-    #         permission_classes = [IsAdmin | IsManagerOfOwnStore]
-    #     else:
-    #         permission_classes = [permissions.IsAuthenticated]
-    #     return [p() for p in permission_classes]
+    def get_permissions(self):
+        if self.action in ['list', 'create', 'destroy']:
+            permission_classes = [IsAdmin]
+        elif self.action in ['retrieve', 'update', 'partial_update']:
+            permission_classes = [IsAdmin | IsManagerOfOwnStore]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [p() for p in permission_classes]
