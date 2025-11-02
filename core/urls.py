@@ -14,6 +14,20 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+# project/urls.py
+from django.conf.urls import handler404, handler500
+# from django.shortcuts import render
+#
+# def custom_page_not_found(request, exception):
+#     return render(request, '404.html', status=404)
+
+# def custom_page_error(request, exception):
+#     return render(request, '500.html', status=500)
+
+# handler404 = custom_page_not_found
+# handler500 = custom_page_error
+
+
 
 schema_view = get_schema_view(
    openapi.Info(

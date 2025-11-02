@@ -17,3 +17,10 @@ class User(AbstractUser):
 
     def get_role(self):
         return self.role
+
+
+class RequestLog(models.Model):
+    path = models.CharField(max_length=300)
+    method = models.CharField(max_length=10)
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
