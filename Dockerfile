@@ -19,8 +19,5 @@ COPY . .
 ## 6. Django’ni run qilish
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# 6. Statik fayllarni yig‘ish
-RUN python manage.py collectstatic --noinput
-
 # 7. Gunicorn orqali ishga tushirish
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]

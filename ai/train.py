@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Input
+from keras.models import Sequential
+from keras.layers import LSTM, Dense, Input
 from sqlalchemy import create_engine
 from datetime import datetime
 import os

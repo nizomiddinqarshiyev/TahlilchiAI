@@ -5,9 +5,9 @@ from sklearn.preprocessing import MinMaxScaler
 from sqlalchemy import create_engine
 from datetime import datetime, timedelta
 import os
+from config import *
 
 # PostgreSQL ulanish
-DB_URL = "postgresql://postgres:4231@localhost:5432/tahlilchi_ai"
 engine = create_engine(DB_URL)
 
 # Model joylashgan papka

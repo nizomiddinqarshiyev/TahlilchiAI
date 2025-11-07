@@ -1,15 +1,8 @@
-import jwt
 from rest_framework import viewsets, generics, permissions
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token as AuthToken
-from django.contrib.auth import authenticate, get_user_model
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer, RegisterSerializer
 from .permissions import IsAdmin, IsManagerOfOwnStore
-from dotenv import load_dotenv
 
-load_dotenv()
-
-SECRET = load_dotenv('SECRET')
 
 User = get_user_model()
 

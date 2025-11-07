@@ -1,5 +1,4 @@
-#version: '3.9'
-#
+
 #services:
 #  db:
 #    image: postgres:16
@@ -46,10 +45,6 @@
 #  media_volume:
 #  postgres_data:
 
-
-
-version: '3.9'
-
 services:
   web:
     build: .
@@ -79,10 +74,12 @@ services:
   db:
     image: postgres:16
     container_name: tahlilchiai_db
+    env_file:
+      - ./.env         # ⬅️ bu yerda .env fayldan avtomatik o‘qiydi
     environment:
-      POSTGRES_DB: tahlilchi
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:

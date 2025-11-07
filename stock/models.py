@@ -55,7 +55,7 @@ class Forecast(models.Model):
     forecast_period = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.product.name} forecast ({self.forecast_period})"
+        return f"{self.product.name} forecast ({self.forecast_date}) ({self.forecast_period})"
 
 
 class Replenishment(models.Model):

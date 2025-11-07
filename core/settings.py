@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+from config import DB_HOST, DB_USER, DB_PORT, DB_PASSWORD, DB_NAME
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ru#=zriyl8c5b$@!o_sbhi!222$$n2jy^g4kz2+e3*b@s85815'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -116,6 +117,9 @@ SPECTACULAR_SETTINGS = {
     'AUTHENTICATION_WHITELIST': [],
     'COMPONENT_SPLIT_REQUEST': True,
     'SECURITY': [{'bearerAuth': []}],
+    'SERVERS': [
+        {'url': 'https://api.tahlilchi-ai.uz', 'description': 'Production server'},
+    ],
     'COMPONENTS': {
         'securitySchemes': {
             'bearerAuth': {
@@ -126,6 +130,18 @@ SPECTACULAR_SETTINGS = {
         },
     },
 }
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
+
+
+
+
 
 
 
@@ -156,11 +172,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tahlilchidb',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
 

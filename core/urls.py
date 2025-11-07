@@ -52,6 +52,7 @@ urlpatterns = [
     path('tahlilchi-admin/', admin.site.urls),
     path('api/stock/', include('stock.urls')),
     path('api/', include('users.urls')),
+    path('api/ai/', include('ai.urls')),
 
     # JWT token olish va yangilash
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -60,3 +61,9 @@ urlpatterns = [
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+
+
+
+
