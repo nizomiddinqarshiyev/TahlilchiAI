@@ -12,3 +12,12 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
 
+STATIC_URL = os.getenv("STATIC_URL")
+STATIC_ROOT = os.getenv("STATIC_ROOT")
+
+MEDIA_URL = os.getenv("MEDIA_URL")
+MEDIA_ROOT = os.getenv("MEDIA_ROOT")
+DEBUG = os.getenv("DEBUG")
+
+
+

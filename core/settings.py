@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-from config import DB_HOST, DB_USER, DB_PORT, DB_PASSWORD, DB_NAME
+
+import config
+from config import MEDIA_URL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,9 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ru#=zriyl8c5b$@!o_sbhi!222$$n2jy^g4kz2+e3*b@s85815'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True") == "True"
-
-ALLOWED_HOSTS = ["*"]
+DEBUG=config.DEBUG
+ALLOWED_HOSTS=["*"]
 
 import datetime
 
@@ -51,11 +52,11 @@ INSTALLED_APPS = [
 
     # project apps
     'core',
-    'users',   # agar app nomi 'users' bo‘lsa, 'authapp' deb o‘zgartirish maqsadga muvofiq (django ichki moduli bilan to‘qnashmasligi uchun)
+    'users',   
     'stock',
 ]
 
-# CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://api.tahlilchi-ai.uz']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -105,6 +106,7 @@ SWAGGER_SETTINGS = {
         }
     },
     'USE_SESSION_AUTH': False,  # Basic Auth o‘rniga Bearer Token ishlatadi
+    'DEFAULT_API_URL': 'https://api.tahlilchi-ai.uz',
 }
 
 
@@ -130,18 +132,6 @@ SPECTACULAR_SETTINGS = {
         },
     },
 }
-
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-
-
-
-
-
 
 
 
@@ -172,11 +162,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
+        'NAME': config.DB_NAME,
+        'USER': config.DB_USER,
+        'PASSWORD': config.DB_PASSWORD,
+        'HOST': config.DB_HOST,
+        'PORT': config.DB_PORT,
     }
 }
 
@@ -216,13 +206,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/sta
+STATIC_URL = config.STATIC_URL
+STATIC_ROOT = config.STATIC_ROOT
 
-STATIC_URL = 'staticfiles/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
+MEDIA_URL = config.MEDIA_URL
+MEDIA_ROOT = config.MEDIA_ROOT
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

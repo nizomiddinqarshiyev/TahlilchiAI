@@ -9,8 +9,10 @@ import os
 
 # PostgreSQL ulanish
 DB_URL = "postgresql://postgres:4231@localhost:5432/tahlilchi_ai"
-engine = create_engine(DB_URL)
-
+try:
+    engine = create_engine(DB_URL)
+except Exception as e:
+    print(f"Bazaga ulanishda xatolik {e}")
 # Model saqlanadigan joy
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, 'models')

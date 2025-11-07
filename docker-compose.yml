@@ -1,55 +1,14 @@
 
-#services:
-#  db:
-#    image: postgres:16
-#    environment:
-#      POSTGRES_DB: tahlilchidb
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    ports:
-#      - "5432:5432"
-#
-#  web:
-#    build: .
-#    command: python manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - .:/app
-#    ports:
-#      - "8000:8000"
-#    depends_on:
-#      - db
-#    environment:
-#      - DEBUG=1
-#      - DB_NAME=tahlilchidb
-#      - DB_USER=postgres
-#      - DB_PASSWORD=postgres
-#      - DB_HOST=db
-#      - DB_PORT=5432
-#
-#  nginx:
-#    image: nginx:1.25
-#    container_name: tahlilchiai_nginx
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - static_volume:/app/staticfiles
-#      - media_volume:/app/media
-#      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-#    depends_on:
-#      - web
-#
-#volumes:
-#  static_volume:
-#  media_volume:
-#  postgres_data:
+version: "3.9"
 
 services:
   web:
     build: .
     container_name: tahlilchiai_web
     command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=api.tahlilchi-ai.uz
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -62,24 +21,42 @@ services:
   nginx:
     image: nginx:1.25
     container_name: tahlilchiai_nginx
+    restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
       - web
+
+  certbot:
+    image: certbot/certbot
+    container_name: tahlilchiai_certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: >
+      sh -c "certbot certonly --webroot
+      --webroot-path=/var/www/certbot
+      --email qarshiyevnizomiddin75@gmail.com
+      --agree-tos
+      --no-eff-email
+      -d api.tahlilchi-ai.uz"
 
   db:
     image: postgres:16
     container_name: tahlilchiai_db
     env_file:
-      - ./.env         # ⬅️ bu yerda .env fayldan avtomatik o‘qiydi
+      - /app/.env
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: DB_NAME
+      POSTGRES_USER: DB_USER
+      POSTGRES_PASSWORD: DB_PASSWORD
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -89,3 +66,4 @@ volumes:
   static_volume:
   media_volume:
   postgres_data:
+

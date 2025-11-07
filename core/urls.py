@@ -6,6 +6,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.urls import path, re_path, include
 
+import config
 from core import settings
 
 from django.urls import path
@@ -59,8 +60,8 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(config.MEDIA_URL, document_root=config.MEDIA_ROOT)
+urlpatterns += static(config.STATIC_URL, document_root=config.STATIC_ROOT)
 
 
 
