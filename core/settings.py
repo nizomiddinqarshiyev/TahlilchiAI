@@ -24,9 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ru#=zriyl8c5b$@!o_sbhi!222$$n2jy^g4kz2+e3*b@s85815'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ["*"]
+DEBUG=False
+ALLOWED_HOSTS=["*"]
 
 import datetime
 
@@ -50,11 +49,11 @@ INSTALLED_APPS = [
 
     # project apps
     'core',
-    'users',   # agar app nomi 'users' bo‘lsa, 'authapp' deb o‘zgartirish maqsadga muvofiq (django ichki moduli bilan to‘qnashmasligi uchun)
+    'users',   
     'stock',
 ]
 
-# CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://api.tahlilchi-ai.uz']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -159,7 +158,7 @@ DATABASES = {
         'NAME': 'tahlilchidb',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -201,11 +200,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/sta
 
-STATIC_URL = 'staticfiles/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+STATIC_ROOT = '/app/staticfiles'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = '/app/media'
 
 
 # Default primary key field type

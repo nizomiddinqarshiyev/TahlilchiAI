@@ -23,7 +23,7 @@ Thumbs.db
 
 # Loglar
 *.log
-
+logs/
 # Replit yoki boshqa servis fayllari
 *.replit
 .replit/
@@ -31,4 +31,9 @@ users/migrations/
 stock/migrations/
 file/
 staticfiles/
+
+certbot/
+nginx/nginx.conf
+Dockerfile
+docker-compose.yml
 
