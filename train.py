@@ -7,14 +7,10 @@ from sqlalchemy import create_engine
 from datetime import datetime
 import os
 
-import config
-
 # PostgreSQL ulanish
-DB_URL = config.DB_URL
-try:
-    engine = create_engine(DB_URL)
-except Exception as e:
-    print(f"Bazaga ulanishda xatolik {e}")
+DB_URL = "postgresql://postgres:4231@localhost:5432/tahlilchi_ai"
+engine = create_engine(DB_URL)
+
 # Model saqlanadigan joy
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
@@ -38,7 +34,7 @@ def train_model(store_id=1):
     print("📊 Ma’lumotlar bazasidan o‘qilmoqda...")
     query = f"""
         SELECT product_id, sale_date, quantity
-        FROM stock_dailysale
+        FROM daily_sales
         WHERE store_id = {store_id}
         ORDER BY sale_date;
     """
