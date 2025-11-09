@@ -31,6 +31,9 @@ users/migrations/
 stock/migrations/
 file/
 staticfiles/
+staticfiles/admin/
+staticfiles/drf-yasg/
+staticfiles/rest_framework/
 
 certbot/
 nginx/nginx.conf

@@ -16,8 +16,5 @@ RUN pip install -r req.txt
 # 5. Django loyihasini konteynerga nusxalash
 COPY . .
 
-## 6. Django’ni run qilish
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
 # 7. Gunicorn orqali ishga tushirish
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "120"]
