@@ -22,6 +22,7 @@ class Product(models.Model):
     category = models.CharField(max_length=50)
     unit = models.CharField(max_length=20)
     shelf_life_days = models.IntegerField()
+    store_id = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, related_name='products')
 
     def __str__(self):
         return self.name

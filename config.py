@@ -18,6 +18,11 @@ STATIC_ROOT = os.getenv("STATIC_ROOT")
 MEDIA_URL = os.getenv("MEDIA_URL")
 MEDIA_ROOT = os.getenv("MEDIA_ROOT")
 DEBUG = os.getenv("DEBUG")
+STAR_COST = os.getenv("STAR_COST")
+TRAIN_COST = os.getenv("TRAIN_COST")
+FORECAST_COST = os.getenv("FORECAST_COST")
+
+
 
 
 

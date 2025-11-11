@@ -1,3 +1,4 @@
+import datetime
 import json
 from rest_framework import viewsets, permissions
 from sqlalchemy.sql.operators import isnot
@@ -104,13 +105,28 @@ class FileUploadAPIView(APIView):
 
         # Ma’lumotlarni bazaga joylash
         created_count = 0
-        for _, row in df.iterrows():
-            data = row.to_dict()
-            try:
-                model.objects.create(**data)
-                created_count += 1
-            except Exception as e:
-                print(f"⚠️ Xatolik: {e}")
+        if model_name.lower() == 'dailysale':
+            store_id = request.data.get('store_id')
+            for _, row in df.iterrows():
+                data = row.to_dict()
+                try:
+                    format_string = "%Y-%m-%d %H:%M:%S"
+                    model.objects.create(
+                    sale_date=datetime.datetime.strptime(data['date'], "%d/%m/%Y"),
+                    product_id=data['product_id'],
+                    quantity=data['quantity'],
+                    store_id=store_id)
+                    created_count += 1
+                except Exception as e:
+                    print(f"⚠️ Xatolik: {e}")
+        else:
+            for _, row in df.iterrows():
+                data = row.to_dict()
+                try:
+                    model.objects.create(**data)
+                    created_count += 1
+                except Exception as e:
+                    print(f"⚠️ Xatolik: {e}")
 
         return Response({
             "message": f" {created_count} ta {model_name} muvaffaqiyatli yuklandi."
