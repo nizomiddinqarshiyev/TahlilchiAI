@@ -40,3 +40,5 @@ nginx/nginx.conf
 Dockerfile
 docker-compose.yml
 
+models/
+

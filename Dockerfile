@@ -12,7 +12,21 @@ WORKDIR /app
 # 4. Kutubxonalarni o‘rnatish
 COPY req.txt .
 RUN pip install -r req.txt
+# --- Add crontab file ---
+COPY crontab /app/ai/train_cron
 
+# --- Give execution rights on the cron job ---
+RUN chmod 0644 /app/ai/train_cron
+
+# --- Apply cron job ---
+RUN crontab /app/ai/train_cron
+
+
+# --- Expose port if needed ---
+EXPOSE 8000
+
+# --- Run cron in foreground and also start Django server ---
+CMD ["sh", "-c", "cron && tail -f /app/logs/train.log"]
 # 5. Django loyihasini konteynerga nusxalash
 COPY . .
 

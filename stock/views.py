@@ -3,6 +3,7 @@ import json
 from rest_framework import viewsets, permissions
 from sqlalchemy.sql.operators import isnot
 
+from ai.forecast import forecast_model
 from users import permissions as user_permissions
 from .serializers import (
     StoreSerializer, ProductSerializer, DailySaleSerializer,
@@ -35,6 +36,15 @@ class DailySaleViewSet(viewsets.ModelViewSet):
     queryset = DailySale.objects.all()
     permission_classes = (permissions.AllowAny,)
     serializer_class = DailySaleSerializer
+
+
+class DailyTrain(APIView):
+    queryset = DailySale.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = DailySaleSerializer
+    def post(self, request, format=None):
+
+        forecast_model()
 
 
 class StockDataViewSet(viewsets.ModelViewSet):
