@@ -13,17 +13,17 @@ WORKDIR /app
 COPY req.txt .
 RUN pip install -r req.txt
 
-RUN apt-get update && \
-    apt-get install -y cron && \
-    apt-get clean
-# --- Add crontab file ---
-COPY crontab /app/crontab/train_cron
-
-# --- Give execution rights on the cron job ---
-RUN chmod 0644 /app/crontab/train_cron
-
-# --- Apply cron job ---
-RUN crontab /ai/train
+#RUN apt-get update && \
+#    apt-get install -y cron && \
+#    apt-get clean
+## --- Add crontab file ---
+#COPY crontab /app/crontab/train_cron
+#
+## --- Give execution rights on the cron job ---
+#RUN chmod 0644 /app/crontab/train_cron
+#
+## --- Apply cron job ---
+#RUN crontab /ai/train
 
 
 # --- Expose port if needed ---
