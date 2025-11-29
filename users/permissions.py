@@ -13,4 +13,7 @@ class IsManagerOfOwnStore(BasePermission):
             return True  # admin hamma narsani ko‘ra oladi
         if request.user.role == 'manager' and hasattr(obj, 'store'):
             return obj.store == request.user.store
+        if request.user.role == 'cashier' and hasattr(obj, 'store'):
+            return obj.store == request.user.store
         return False
+

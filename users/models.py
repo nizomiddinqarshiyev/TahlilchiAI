@@ -1,10 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from stock.models import Store
+
+
 class User(AbstractUser):
     ROLE_CHOICES = [
         ('admin', 'Admin'),
         ('manager', 'Manager'),
+        ('cashier', 'Cashier'),
     ]
 
     full_name = models.CharField(max_length=150)

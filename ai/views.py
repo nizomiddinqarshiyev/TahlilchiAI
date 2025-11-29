@@ -2,6 +2,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from users.permissions import IsAdmin, IsManagerOfOwnStore
 from .serializers import TrainRequestSerializer, ForecastRequestSerializer
 from .train import train_model
 from .forecast import forecast_model
@@ -9,6 +11,7 @@ from users.models import User
 import config
 
 class TrainAPIView(APIView):
+    permission_classes = [IsAdmin,]
     """Modelni o‘qitish uchun endpoint"""
     def post(self, request):
         serializer = TrainRequestSerializer(data=request.data)
@@ -18,7 +21,7 @@ class TrainAPIView(APIView):
             if user.cache is None or user.cache < config.TRAIN_COST:
                 return Response({
                     "status": "error",
-                    "message": f"Yetarli balans (cache) mavjud emas. Kamida {config.TRAIN_COST} coin kerak."
+                    "message": f"Yetarli balans (cash) mavjud emas. Kamida {config.TRAIN_COST} coin kerak."
                 }, status=status.HTTP_403_FORBIDDEN)
             try:
                 res = train_model(store_id=store_id)
@@ -37,7 +40,7 @@ class TrainAPIView(APIView):
 
 class ForecastAPIView(APIView):
     """Modeldan foydalanib bashorat yaratish uchun endpoint"""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsManagerOfOwnStore]
 
     def post(self, request):
         serializer = ForecastRequestSerializer(data=request.data)
@@ -50,7 +53,7 @@ class ForecastAPIView(APIView):
         user = request.user
         if store_id is None:
             store_id = user.store_id
-        # 🔒 Faqat cache ≥ 3 bo‘lsa bashoratga ruxsat beramiz
+        # 🔒 Faqat cash ≥ 3 bo‘lsa bashoratga ruxsat beramiz
         if user.cache is None or user.cache < config.FORECAST_COST:
             return Response({
                 "status": "error",
@@ -62,7 +65,7 @@ class ForecastAPIView(APIView):
             res = forecast_model(store_id=store_id, forecast_days=forecast_days)
             # ✅ User cache ni 3 taga kamaytirish
             user.cache = user.cache - config.FORECAST_COST
-            user.save(update_fields=['cache'])
+            user.save(update_fields=['cash'])
 
             return Response({
                 "status": "success",

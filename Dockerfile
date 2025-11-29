@@ -12,14 +12,18 @@ WORKDIR /app
 # 4. Kutubxonalarni o‘rnatish
 COPY req.txt .
 RUN pip install -r req.txt
+
+RUN apt-get update && \
+    apt-get install -y cron && \
+    apt-get clean
 # --- Add crontab file ---
-COPY crontab /app/ai/train_cron
+COPY crontab /app/crontab/train_cron
 
 # --- Give execution rights on the cron job ---
-RUN chmod 0644 /app/ai/train_cron
+RUN chmod 0644 /app/crontab/train_cron
 
 # --- Apply cron job ---
-RUN crontab /app/ai/train_cron
+RUN crontab /ai/train
 
 
 # --- Expose port if needed ---
