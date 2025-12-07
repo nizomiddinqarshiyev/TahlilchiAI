@@ -8,5 +8,3 @@ def calculate_star(star_cost, train_cost, forecast_cost):
 
 
 calculate_star(STAR_COST, TRAIN_COST, FORECAST_COST)
-
-

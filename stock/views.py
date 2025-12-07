@@ -5,6 +5,7 @@ from sqlalchemy.sql.operators import isnot
 
 from ai.forecast import forecast_model
 from users import permissions as user_permissions
+from users.permissions import IsOwnerStoreUser, IsAdmin
 from .serializers import (
     StoreSerializer, ProductSerializer, DailySaleSerializer,
     StockDataSerializer, ForecastSerializer, ReplenishmentSerializer
@@ -17,24 +18,23 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Store, Product, DailySale, StockData, Forecast, Replenishment
-
+from .utils import calculate_replenishment
 
 
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = StoreSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (IsOwnerStoreUser,)
     serializer_class = ProductSerializer
-
 
 class DailySaleViewSet(viewsets.ModelViewSet):
     queryset = DailySale.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = DailySaleSerializer
 
 
@@ -43,26 +43,47 @@ class DailyTrain(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = DailySaleSerializer
     def post(self, request, format=None):
-
         forecast_model()
 
 
 class StockDataViewSet(viewsets.ModelViewSet):
     queryset = StockData.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = StockDataSerializer
 
 
 class ForecastViewSet(viewsets.ModelViewSet):
     queryset = Forecast.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ForecastSerializer
 
 
 class ReplenishmentViewSet(viewsets.ModelViewSet):
     queryset = Replenishment.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ReplenishmentSerializer
+
+class AutoReplenishmentAPIView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request, *args, **kwargs):
+        try:
+            store_id = request.user.store_id
+            store = Store.objects.get(id=store_id)
+        except Store.DoesNotExist:
+            return Response({"error": "Store topilmadi"}, status=status.HTTP_404_NOT_FOUND)
+
+        products = Product.objects.filter(store_id=store)
+
+        results = []
+        for product in products:
+            r = calculate_replenishment(store, product)
+            results.append(r)
+
+        return Response({
+            "store": store.name,
+            "total_products": products.count(),
+            "replenishment_results": results
+        }, status=status.HTTP_201_CREATED)
 
 
 

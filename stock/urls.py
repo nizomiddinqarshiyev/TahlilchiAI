@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     StoreViewSet, ProductViewSet, DailySaleViewSet,
-    StockDataViewSet, ForecastViewSet, ReplenishmentViewSet, FileUploadAPIView, UploadForecastAPIView
+    StockDataViewSet, ForecastViewSet, ReplenishmentViewSet, FileUploadAPIView, UploadForecastAPIView,
+    AutoReplenishmentAPIView
 )
 
 router = DefaultRouter()
@@ -17,4 +18,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('upload-data', FileUploadAPIView.as_view(), name='add-data'),
     path('upload-forecast', UploadForecastAPIView.as_view(), name='forecast-upload'),
+    path('auto-replenishment', AutoReplenishmentAPIView.as_view(), name='auto-replenishment'),
 ]

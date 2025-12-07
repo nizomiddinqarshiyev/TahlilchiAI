@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from users.permissions import IsAdmin, IsManagerOfOwnStore
+from users.permissions import IsAdmin, IsOwnerStoreUser
 from .serializers import TrainRequestSerializer, ForecastRequestSerializer
 from .train import train_model
 from .forecast import forecast_model
@@ -40,7 +40,7 @@ class TrainAPIView(APIView):
 
 class ForecastAPIView(APIView):
     """Modeldan foydalanib bashorat yaratish uchun endpoint"""
-    permission_classes = [IsAuthenticated, IsManagerOfOwnStore]
+    permission_classes = [IsAuthenticated, IsOwnerStoreUser]
 
     def post(self, request):
         serializer = ForecastRequestSerializer(data=request.data)
@@ -65,7 +65,7 @@ class ForecastAPIView(APIView):
             res = forecast_model(store_id=store_id, forecast_days=forecast_days)
             # ✅ User cache ni 3 taga kamaytirish
             user.cache = user.cache - config.FORECAST_COST
-            user.save(update_fields=['cash'])
+            user.save(update_fields=['cache'])
 
             return Response({
                 "status": "success",

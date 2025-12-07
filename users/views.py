@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics, permissions
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, RegisterSerializer
-from .permissions import IsAdmin, IsManagerOfOwnStore
+from .permissions import IsAdmin, IsOwnerStoreUser
 
 
 User = get_user_model()
@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'create', 'destroy']:
             permission_classes = [IsAdmin]
         elif self.action in ['retrieve', 'update', 'partial_update']:
-            permission_classes = [IsAdmin | IsManagerOfOwnStore]
+            permission_classes = [IsAdmin | IsOwnerStoreUser]
         else:
             permission_classes = [permissions.IsAuthenticated]
         return [p() for p in permission_classes]
