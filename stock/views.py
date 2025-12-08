@@ -23,7 +23,7 @@ from .utils import calculate_replenishment
 
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = StoreSerializer
 
 
@@ -34,13 +34,13 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 class DailySaleViewSet(viewsets.ModelViewSet):
     queryset = DailySale.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = DailySaleSerializer
 
 
 class DailyTrain(APIView):
     queryset = DailySale.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = DailySaleSerializer
     def post(self, request, format=None):
         forecast_model()
@@ -48,23 +48,23 @@ class DailyTrain(APIView):
 
 class StockDataViewSet(viewsets.ModelViewSet):
     queryset = StockData.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = StockDataSerializer
 
 
 class ForecastViewSet(viewsets.ModelViewSet):
     queryset = Forecast.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = ForecastSerializer
 
 
 class ReplenishmentViewSet(viewsets.ModelViewSet):
     queryset = Replenishment.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = ReplenishmentSerializer
 
 class AutoReplenishmentAPIView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     def post(self, request, *args, **kwargs):
         try:
             store_id = request.user.store_id
