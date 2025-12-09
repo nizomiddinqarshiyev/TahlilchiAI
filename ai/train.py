@@ -7,10 +7,11 @@ from sqlalchemy import create_engine
 from datetime import datetime
 import os
 
-import config
+# import config
 
 # PostgreSQL ulanish
-DB_URL = config.DB_URL
+# DB_URL = config.DB_URL
+DB_URL = "postgresql://postgres:postgres@localhost:5432/tahlilchidb"
 try:
     engine = create_engine(DB_URL)
 except Exception as e:

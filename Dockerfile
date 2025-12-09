@@ -30,9 +30,9 @@ RUN pip install -r req.txt
 EXPOSE 8000
 
 # --- Run cron in foreground and also start Django server ---
-CMD ["sh", "-c", "cron && tail -f /app/logs/train.log"]
+#CMD ["sh", "-c", "cron && tail -f /app/logs/train.log"]
 # 5. Django loyihasini konteynerga nusxalash
 COPY . .
 
 # 7. Gunicorn orqali ishga tushirish
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "120"]
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "600"]
